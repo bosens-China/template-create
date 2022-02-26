@@ -26,11 +26,9 @@ pnpm create @boses my-app --templat=base
 
 具体的 template 列表参考下面
 
-## 模板仓库列表
+## 模板列表
 
-| 名称                        | 描述         |
-| --------------------------- | ------------ |
-| [base](./src/template-base) | 基础模板文件 |
+- [base](./src/template-base)：基础模板文件
 
 ## 常见问题
 
@@ -45,6 +43,7 @@ eslint 的规范选取了 [airbnb](https://github.com/iamturns/eslint-config-air
 ```
 
 **git commit 提交失败**
+
 项目默认使用了 [husky](https://github.com/typicode/husky) 来验证你的 git 提交信息，你可以使用 `npx cz` 的形式来进行代码的规范化提交。
 
 ## 后续更新计划
