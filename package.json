@@ -5,7 +5,7 @@
   "author": "boses",
   "license": "MIT",
   "bin": {
-    "tc": "./src/main.js"
+    "create": "./src/main.js"
   },
   "files": [
     "src"
