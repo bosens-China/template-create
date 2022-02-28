@@ -7,64 +7,30 @@ import prompts from 'prompts';
 import validate from 'validate-npm-package-name';
 import fs from 'fs-extra';
 import { spawnSync, execSync } from 'child_process';
-import os from 'os';
-
-import { blue, green, red } from 'kolorist';
-import { version } from '../package.json';
+import { green, red, yellow, cyan } from 'kolorist';
+import { PackageType, PACKAGE_NAME, RENAME_FILES } from './constant';
+import { caller, pullCode, lockDirPath } from './utils';
 
 const IS_TEST = process.env.NODE_ENV === 'test';
 
-const templateAll = [
+const TEMPLATE_ALL = [
   {
     name: 'base',
     value: 'base',
-    color: blue,
+    color: yellow,
   },
-];
-const templateValues = templateAll.map((f) => f.name);
+  {
+    name: 'react',
+    value: 'react',
+    color: cyan,
+  },
+] as const;
+const TEMPLATE_VALUES = TEMPLATE_ALL.map((f) => f.name);
 
-const caller = (code?: string) => {
-  if (!code) {
-    return null;
-  }
-  // npm/8.1.3 node/v16.13.0 win32 x64 workspaces/false
-  // pnpm/6.32.1 npm/? node/v16.13.0 win32 x64
-  const reg = /([\w\W]+?)\//;
-  const name = (code.match(reg) || ['', 'npm'])[1];
-  return name;
-};
-
-const pull = (packageNmae?: string) => {
-  /*
-   * 考虑加速到镜像加速 https://zhuanlan.zhihu.com/p/430580607
-   */
-  const url = 'https://registry.npmmirror.com';
-
-  switch (packageNmae) {
-    case 'pnpm':
-      return `pnpm install --registry ${url}`;
-
-    case 'yarn':
-      return `yarn install --registry ${url}`;
-
-    default:
-      return `npm install --registry ${url}`;
-  }
-};
-
-const getLockPath = (packageNmae: string, template: string) => {
-  let lockName = '';
-  const filePath = [os.tmpdir(), `template${version}`, template];
-  switch (packageNmae) {
-    case 'yarn':
-      lockName = 'yarn.lock';
-      break;
-    default:
-      lockName = 'package-lock.json';
-  }
-  filePath.push(lockName);
+const getLockPath = (packageNmae: PackageType, template: string) => {
+  const lockName = PACKAGE_NAME[packageNmae];
   return {
-    filePath: path.join(...filePath),
+    filePath: path.join(lockDirPath(`${template}/${lockName}`)),
     lockName,
   };
 };
@@ -72,24 +38,46 @@ const getLockPath = (packageNmae: string, template: string) => {
 /*
  * 将lock文件复制到临时目录下，加速安装
  */
-const copyLockFile = async (packageNmae: string, dest: string, template: string) => {
-  if (packageNmae === 'pnpm') {
+const copyLockFile = async (packageNmae: PackageType, dest: string, template: string) => {
+  // 收集当前模板存在什么lock文件
+  const files = fs.readdirSync(dest);
+  const result = Object.entries(PACKAGE_NAME).reduce((obj, [name, value]) => {
+    const o = obj;
+    o[name] = files.includes(value);
+    return o;
+  }, {} as Record<PackageType, boolean>);
+  // 将出了选择安装方式外的lock文件移动走
+  await Promise.all(
+    Object.keys(result)
+      .filter((f) => f !== packageNmae)
+      .map((key) => {
+        const name = PACKAGE_NAME[key];
+        const src = path.join(dest, name);
+        return (async () => {
+          if (!fs.existsSync(src)) {
+            return;
+          }
+          await fs.move(src, lockDirPath(`${template}/${name}`));
+        })();
+      }),
+  );
+
+  if (result[packageNmae]) {
     return;
   }
   const { filePath, lockName } = getLockPath(packageNmae, template);
-
   if (!fs.existsSync(filePath)) {
     return;
   }
   await fs.copy(filePath, path.join(dest, lockName));
 };
 
-const writeLockFile = async (packageNmae: string, cwd: string, template: string) => {
-  if (packageNmae === 'pnpm') {
-    return;
-  }
+/*
+ * 将安装完成的lock文件上传到临时文件夹下，加速使用
+ */
+const writeLockFile = async (packageNmae: PackageType, cwd: string, template: string) => {
   const { filePath, lockName } = getLockPath(packageNmae, template);
-  await Promise.all([fs.remove(path.join(cwd, 'pnpm-lock.yaml')), fs.copy(path.join(cwd, lockName), filePath)]);
+  await Promise.all([fs.remove(path.join(cwd, '.git')), fs.copy(path.join(cwd, lockName), filePath)]);
 };
 
 const app = async () => {
@@ -100,11 +88,11 @@ const app = async () => {
   interface Info {
     dir?: string;
     template?: string;
-    mode: string;
+    mode: PackageType;
   }
   const argv = minimist(process.argv.slice(2)) as Argv;
   const info: Info = {
-    mode: caller(process.env.npm_config_user_agent) || 'npm',
+    mode: caller(),
   };
   const [dir] = argv._;
   const { template } = argv;
@@ -114,7 +102,7 @@ const app = async () => {
   }
   // 如果为true则直接选择第一项
 
-  info.template = typeof template === 'boolean' ? templateValues[0]! : template;
+  info.template = typeof template === 'boolean' ? TEMPLATE_VALUES[0] : template;
 
   /*
    * 初始化信息完成
@@ -171,12 +159,12 @@ const app = async () => {
       },
       {
         type: () => {
-          if (!info.template || !templateValues.includes(info.template)) {
+          if (!info.template || !TEMPLATE_VALUES.includes(info.template as any)) {
             return 'select';
           }
           return null;
         },
-        choices: templateAll.map((f) => ({
+        choices: TEMPLATE_ALL.map((f) => ({
           title: f.color(f.name),
           value: f.value,
         })),
@@ -208,21 +196,21 @@ const app = async () => {
 
   const cwd = path.join(process.cwd(), mergeValue.dir);
 
-  await Promise.all([
-    fs.copy(path.join(__dirname, `template-${mergeValue.template}`), cwd),
-    // 需要考虑到lock文件加速
-    copyLockFile(mergeValue.mode, cwd, mergeValue.template),
-  ]);
+  await fs.copy(path.join(__dirname, `template-${mergeValue.template}`), cwd);
+  // 需要考虑到lock文件加速
+  await copyLockFile(mergeValue.mode, cwd, mergeValue.template);
+  // 特殊文件需要更改名称
+  await Object.entries(RENAME_FILES).map(([name, value]) => fs.rename(path.join(cwd, name), path.join(cwd, value)));
   const install = async () => {
-    const codeString = pull(mergeValue.mode);
+    const codeString = pullCode(mergeValue.mode);
     const spawnResult = spawnSync(codeString, { cwd, stdio: 'inherit', shell: true });
     if (spawnResult.error) {
       throw spawnResult.error;
     }
-    await Promise.all([writeLockFile(mergeValue.mode, cwd, mergeValue.template), fs.remove(path.join(cwd, '.git'))]);
+    await writeLockFile(mergeValue.mode, cwd, mergeValue.template);
     try {
-      execSync('git init');
-      execSync('git add .');
+      execSync('git init', { cwd, stdio: 'ignore' });
+      execSync('git add .', { cwd, stdio: 'ignore' });
     } catch {
       //
     }

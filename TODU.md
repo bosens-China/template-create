@@ -1,2 +1,7 @@
+## 待完成
+
 - 新增 template-modules
-- 新增 template-react
+
+## 已完成
+
+- [x] 新增 template-react

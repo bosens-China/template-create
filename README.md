@@ -28,7 +28,8 @@ pnpm create @boses my-app --templat=base
 
 ## 模板列表
 
-- [base](./src/template-base)：基础模板文件
+- [base](./src/template-base)：基础模板
+- [react](./src/template-react)：react 基础模板
 
 ## 常见问题
 

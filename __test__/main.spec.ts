@@ -1,6 +1,7 @@
 import path from 'path';
 import { commandSync, SyncOptions } from 'execa';
 import fs from 'fs-extra';
+import { lockDirPath } from '../src/utils';
 
 const CLI_PATH = path.join(__dirname, '../src/main.ts');
 
@@ -12,14 +13,34 @@ const temporary = async () => {
   await fs.writeJson(path.join(getPath, 'package.json'), { name: 'test' });
 };
 
+const RENAME_FILES = {
+  _gitignore: '.gitignore',
+};
+
+const getReaddirSync = (dest) =>
+  fs
+    .readdirSync(dest)
+    .map((f) => {
+      if (RENAME_FILES[f]) {
+        return RENAME_FILES[f];
+      }
+      return f;
+    })
+    .sort();
+
 const run = (args: Array<string>, options?: SyncOptions<string>) =>
   commandSync(`ts-node ${CLI_PATH} ${args.join(' ')}`, options);
 
+const remove = async () => {
+  await Promise.all([fs.remove(getPath), fs.remove(lockDirPath(''))]);
+};
+
 beforeAll(async () => {
-  await fs.remove(getPath);
+  process.env.npm_config_user_agent = 'npm/8.1.3 node/v16.13.0 win32 x64 workspaces/false';
+  await remove();
 });
 afterEach(async () => {
-  await fs.remove(getPath);
+  await remove();
 });
 
 test(`项目名称输入`, () => {
@@ -51,7 +72,19 @@ test('无效项目类型重新选择', () => {
 test('普通安装', () => {
   const { stdout } = run([name, '--template=base'], { cwd: __dirname });
   expect(stdout).toContain('安装完成');
-  const baseFiles = fs.readdirSync(path.join(CLI_PATH, '../template-base')).sort();
-  const newBaseFiles = fs.readdirSync(getPath).sort();
+  const baseFiles = getReaddirSync(path.join(CLI_PATH, '../template-base')).sort();
+  /*
+   * 因为设置了npm变量，所以pnpm-lock会被删除
+   */
+  const newBaseFiles = ['pnpm-lock.yaml', ...getReaddirSync(getPath)].sort();
   expect(newBaseFiles).toEqual(baseFiles);
+});
+
+test('测试lock文件存留情况', () => {
+  run([name, '--template=base'], { cwd: __dirname });
+  expect(fs.existsSync(path.join(getPath, 'pnpm-lock.yaml'))).toBeFalsy();
+  expect(fs.existsSync(path.join(getPath, 'yarn.lock'))).toBeFalsy();
+  expect(fs.existsSync(path.join(getPath, 'package-lock.json'))).toBeFalsy();
+  // 同时也要测试缓存文件是否存在
+  expect(fs.existsSync(lockDirPath('base/pnpm-lock.yaml'))).toBeTruthy();
 });

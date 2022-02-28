@@ -1,6 +1,6 @@
 {
   "name": "@boses/create",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "创建模板仓库脚手架",
   "author": "boses",
   "license": "MIT",
@@ -38,6 +38,8 @@
     "babel-jest": "^27.5.1",
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
+    "esbuild": "^0.14.23",
+    "esbuild-node-externals": "^1.4.1",
     "eslint": "^8.9.0",
     "eslint-config-airbnb-typescript": "^16.1.0",
     "eslint-config-prettier": "^8.4.0",
@@ -68,8 +70,8 @@
     "format": "prettier --write .",
     "test": "jest",
     "test-watch": "jest --watch",
-    "build": "tsc -p ./build.tsconfig.json",
-    "build-watch": "tsc -p ./build.tsconfig.json --watch"
+    "build": "node ./script/build.js",
+    "build-watch": "node ./script/build --watch"
   },
   "dependencies": {
     "fs-extra": "^10.0.1",
