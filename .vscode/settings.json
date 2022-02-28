@@ -1,0 +1,9 @@
+{
+  "eslint.validate": ["javascript", "javascriptreact", "vue", "typescript", "typescriptreact"],
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "files.eol": "\n",
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true
+}

@@ -1,0 +1,71 @@
+{
+  "name": "template-react",
+  "version": "1.0.0",
+  "description": "typeScript-react基础模板",
+  "private": true,
+  "author": "boses",
+  "license": "MIT",
+  "devDependencies": {
+    "@commitlint/cli": "^16.2.1",
+    "@commitlint/config-conventional": "^16.2.1",
+    "@types/lodash-es": "^4.17.6",
+    "@types/node": "^17.0.21",
+    "@types/nprogress": "^0.2.0",
+    "@types/react": "^17.0.39",
+    "@types/react-dom": "^17.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@typescript-eslint/parser": "^5.12.1",
+    "@vitejs/plugin-react": "^1.2.0",
+    "commitizen": "^4.2.4",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.10.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^16.1.0",
+    "eslint-config-prettier": "^8.4.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.29.2",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "husky": "^7.0.4",
+    "less": "^4.1.2",
+    "prettier": "^2.5.1",
+    "ts-node": "^10.5.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.5.5",
+    "vite": "^2.8.4",
+    "vite-tsconfig-paths": "^3.4.1"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "tsc --checkJs --noEmit && eslint --ext .ts,.js src",
+    "fix": "eslint --fix --ext .js,.ts src",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.8.0",
+    "ahooks": "^3.1.10",
+    "antd": "^4.18.8",
+    "lodash-es": "^4.17.21",
+    "moment": "^2.29.1",
+    "nprogress": "^0.2.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.6",
+    "react-router-dom": "^6.2.1",
+    "umi-request": "^1.4.0"
+  }
+}

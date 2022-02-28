@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "./.eslintrc.js",
+    "*.js",
+    "*.jsx",
+    "*.ts",
+    "*.tsx",
+    "src/**/*.js",
+    "src/**/*.jsx",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "__mocks__/**/*.js",
+    "__mocks__/**/*.jsx",
+    "__mocks__/**/*.ts",
+    "__mocks__/**/*.tsx",
+    "test/**/*.js",
+    "test/**/*.jsx",
+    "test/**/*.ts",
+    "test/**/*.tsx",
+    "__test__/**/*.js",
+    "__test__/**/*.ts",
+    "__test__/**/*.tsx"
+  ]
+}
