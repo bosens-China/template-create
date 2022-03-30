@@ -15,5 +15,6 @@ module.exports = {
   rules: {
     'prettier/prettier': 'error',
     'import/no-extraneous-dependencies': ['error', { devDependencies: ['./script/*'] }],
+    'import/no-unresolved': [2, { commonjs: true }],
   },
 };

@@ -1,5 +1,6 @@
 import path from 'path';
 import os from 'os';
+import { execSync } from 'child_process';
 import type { PackageType } from './constant';
 import { version } from '../package.json';
 
@@ -24,3 +25,15 @@ export const pullCode = (packageNmae: PackageType) => {
 };
 
 export const lockDirPath = (template: string) => path.join(os.tmpdir(), `template${version}`, template);
+
+/*
+ * git 是否存在
+ */
+export const gitExists = () => {
+  try {
+    execSync('git -v', { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+};

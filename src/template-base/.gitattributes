@@ -1,1 +1,31 @@
-* text eol=lf
+# 引用自 https://github.com/mozilla/pdf.js/blob/master/.gitattributes
+
+# Force Unix line endings for most file formats (except binary files)
+*.js         text eol=lf
+*.jsx         text eol=lf
+*.ts         text eol=lf
+*.tsx         text eol=lf
+*.jsm        text eol=lf
+*.css        text eol=lf
+*.less        text eol=lf
+*.csss        text eol=lf
+*.cass        text eol=lf
+*.html       text eol=lf
+*.md         text eol=lf
+*.properties text eol=lf
+*.yml        text eol=lf
+*.json       text eol=lf
+*.config     text eol=lf
+*.inc        text eol=lf
+*.manifest   text eol=lf
+*.rdf        text eol=lf
+*.jade       text eol=lf
+*.coffee     text eol=lf
+
+# PDF files shall not modify CRLF line endings
+*.pdf -crlf
+
+# Linguist language overrides
+*.js linguist-language=JavaScript
+*.jsm linguist-language=JavaScript
+*.inc linguist-language=XML

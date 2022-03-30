@@ -9,7 +9,7 @@ import fs from 'fs-extra';
 import { spawnSync, execSync } from 'child_process';
 import { green, red, yellow, cyan } from 'kolorist';
 import { PackageType, PACKAGE_NAME, RENAME_FILES } from './constant';
-import { caller, pullCode, lockDirPath } from './utils';
+import { caller, pullCode, lockDirPath, gitExists } from './utils';
 
 const IS_TEST = process.env.NODE_ENV === 'test';
 
@@ -208,11 +208,12 @@ const app = async () => {
       throw spawnResult.error;
     }
     await writeLockFile(mergeValue.mode, cwd, mergeValue.template);
-    try {
+    const result = gitExists();
+    if (result) {
       execSync('git init', { cwd, stdio: 'ignore' });
       execSync('git add .', { cwd, stdio: 'ignore' });
-    } catch {
-      //
+      // 初始化git钩子
+      execSync('npx husky install', { cwd, stdio: 'ignore' });
     }
   };
 
