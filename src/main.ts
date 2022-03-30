@@ -46,7 +46,7 @@ const copyLockFile = async (packageNmae: PackageType, dest: string, template: st
     o[name] = files.includes(value);
     return o;
   }, {} as Record<PackageType, boolean>);
-  // 将出了选择安装方式外的lock文件移动走
+  // 将除了选择安装方式外的lock文件移动走
   await Promise.all(
     Object.keys(result)
       .filter((f) => f !== packageNmae)
@@ -57,7 +57,9 @@ const copyLockFile = async (packageNmae: PackageType, dest: string, template: st
           if (!fs.existsSync(src)) {
             return;
           }
-          await fs.move(src, lockDirPath(`${template}/${name}`));
+          await fs.move(src, lockDirPath(`${template}/${name}`), {
+            overwrite: true,
+          });
         })();
       }),
   );
@@ -204,9 +206,15 @@ const app = async () => {
   const install = async () => {
     const codeString = pullCode(mergeValue.mode);
     const spawnResult = spawnSync(codeString, { cwd, stdio: 'inherit', shell: true });
-    if (spawnResult.error) {
-      throw spawnResult.error;
+    if (spawnResult.status !== 0) {
+      throw (
+        spawnResult.error ||
+        new Error(
+          '安装过程出现问题，请稍后重试，或者你可以将自己node版本号记录下来进入 https://github.com/bosens-China/template-create/issues 提交',
+        )
+      );
     }
+
     await writeLockFile(mergeValue.mode, cwd, mergeValue.template);
     const result = gitExists();
     if (result) {
