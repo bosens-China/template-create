@@ -1,6 +1,6 @@
 {
   "name": "@boses/create",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "创建模板仓库脚手架",
   "author": "boses",
   "license": "MIT",
@@ -8,8 +8,7 @@
     "create": "./src/main.js"
   },
   "files": [
-    "src",
-    "!src/*.ts"
+    "src"
   ],
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || >=15.0.0"

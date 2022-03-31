@@ -29,13 +29,13 @@ pnpm create @boses my-app --templat=base
 ## 模板列表
 
 - [base](./src/template-base)：基础模板
-- [react](./src/template-react)：react 基础模板
+- [react](./src/template-react)：React 基础模板
 
 ## 常见问题
 
 **Parsing error: "parserOptions.project" has been set for @typescript-eslint/parser. ...**
 
-eslint 的规范选取了 [airbnb](https://github.com/iamturns/eslint-config-airbnb-typescript)，但是它本身有一个问题，如果你创建了一个新的目录例如 lib，它本身没有包含在 [tsconfig.eslint.json](./tsconfig.eslint.json) 内，会导致 eslint 的规则校验出现报错信息，对此你只需要修改 [tsconfig.eslint.json](./tsconfig.eslint.json) 内容。
+Eslint 的规范选取了 [Airbnb](https://github.com/iamturns/eslint-config-airbnb-typescript)，但是它本身有一个问题，如果你创建了一个新的目录例如 lib，它本身没有包含在 [tsconfig.eslint.json](./tsconfig.eslint.json) 内，会导致 Eslint 的规则校验出现报错信息，对此你只需要修改 [tsconfig.eslint.json](./tsconfig.eslint.json) 内容。
 
 ```js
 // ...省略其他
