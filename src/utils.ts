@@ -31,7 +31,8 @@ export const lockDirPath = (template: string) => path.join(os.tmpdir(), `templat
  */
 export const gitExists = () => {
   try {
-    execSync('git -v', { stdio: 'ignore' });
+    // 不要简写
+    execSync('git --version', { stdio: 'ignore' });
     return true;
   } catch {
     return false;

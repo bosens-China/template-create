@@ -1,4 +1,4 @@
-# create-template
+# template-create
 
 创建模板文件的脚手架工具
 
@@ -17,9 +17,9 @@ pnpm create @boses
 
 ```sh
 # npm
-npm init @boses my-app --templat=base
+npm init @boses my-app --template=base
 # yarn
-yarn create @boses my-app --templat=base
+yarn create @boses my-app --template=base
 # pnpm
 pnpm create @boses my-app --templat=base
 ```

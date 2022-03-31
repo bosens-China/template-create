@@ -1,6 +1,6 @@
 {
   "name": "@boses/create",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "description": "创建模板仓库脚手架",
   "author": "boses",
   "license": "MIT",
@@ -8,7 +8,8 @@
     "create": "./src/main.js"
   },
   "files": [
-    "src"
+    "src",
+    "!src/*.ts"
   ],
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || >=15.0.0"
@@ -54,6 +55,13 @@
     "tslib": "^2.3.1",
     "typescript": "^4.5.5"
   },
+  "dependencies": {
+    "fs-extra": "^10.0.1",
+    "kolorist": "^1.5.1",
+    "minimist": "^1.2.5",
+    "prompts": "^2.4.2",
+    "validate-npm-package-name": "^3.0.0"
+  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
@@ -72,12 +80,5 @@
     "test-watch": "jest --watch",
     "build": "node ./script/build.js",
     "build-watch": "node ./script/build --watch"
-  },
-  "dependencies": {
-    "fs-extra": "^10.0.1",
-    "kolorist": "^1.5.1",
-    "minimist": "^1.2.5",
-    "prompts": "^2.4.2",
-    "validate-npm-package-name": "^3.0.0"
   }
 }
