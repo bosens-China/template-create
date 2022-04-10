@@ -40,14 +40,17 @@ Eslint 的规范选取了 [Airbnb](https://github.com/iamturns/eslint-config-air
 ```
 
 **git commit 没有触发校验钩子**
+
 因为 [husky](https://github.com/typicode/husky) 最新版本已经不再默认校验提交，你必须手动 `npx husky install` 初始化一次。
 
 在默认安装时已经自动帮你完成这一步骤了，但是如果后续你推送到 github 然后 pull 下来需要你手动执行一次。
 
 **怎么统一行尾序列**
+
 在不同的项目中，默认对 `.gitattributes` 文件做了不同的配置，如果你新增了新的格式，例如 `py` 后缀可能需要你根据上述内容自己手动将相对应后缀添加到 .gitattributes 文件中。
 
 **如何运行 git 规范提交**
+
 你可以运行 `npx cz` ，然后根据操作一步步完成后续操作。
 
 **git commit 提交失败**
