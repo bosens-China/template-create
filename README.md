@@ -1,28 +1,24 @@
 # template-create
 
-创建模板文件的脚手架工具
+创建模板文件的脚手架工具。
 
 ## 使用方式
 
 ```sh
-# npm
-npm init @boses
+# npm 6.x
+npm init @boses --template base
+
+# npm 7+, 需要额外的双横线：
+npm init @boses my-app -- --template base
+
 # yarn
-yarn create @boses
+yarn create @boses my-app --template base
+
 # pnpm
-pnpm create @boses
+pnpm create @boses my-app -- --template base
 ```
 
-然后根据命令一步步操作即可，如果你厌倦了上面的一步步操作，也可以通过指定类别来完成快速操作
-
-```sh
-# npm
-npm init @boses my-app --template=base
-# yarn
-yarn create @boses my-app --template=base
-# pnpm
-pnpm create @boses my-app --templat=base
-```
+上面的 `my-app` 以及 `--template` 你也可以后续给出。
 
 具体的 template 列表参考下面
 
@@ -42,6 +38,17 @@ Eslint 的规范选取了 [Airbnb](https://github.com/iamturns/eslint-config-air
 'lib/*.js',
 'lib/*.ts',
 ```
+
+**git commit 没有触发校验钩子**
+因为 [husky](https://github.com/typicode/husky) 最新版本已经不再默认校验提交，你必须手动 `npx husky install` 初始化一次。
+
+在默认安装时已经自动帮你完成这一步骤了，但是如果后续你推送到 github 然后 pull 下来需要你手动执行一次。
+
+**怎么统一行尾序列**
+在不同的项目中，默认对 `.gitattributes` 文件做了不同的配置，如果你新增了新的格式，例如 `py` 后缀可能需要你根据上述内容自己手动将相对应后缀添加到 .gitattributes 文件中。
+
+**如何运行 git 规范提交**
+你可以运行 `npx cz` ，然后根据操作一步步完成后续操作。
 
 **git commit 提交失败**
 
